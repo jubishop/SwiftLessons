@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-  @ObservedObject var appData: AppData
+  @EnvironmentObject var appData: AppData
   
   var body: some View {
     VStack {
@@ -30,6 +30,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView(appData: AppData())
+    ContentView().environmentObject(AppData())
   }
 }

@@ -1,6 +1,10 @@
 import Foundation
 
-struct PictureViewModel : Identifiable {
+struct PictureViewModel : Identifiable, Hashable {
+  static func == (lhs: PictureViewModel, rhs: PictureViewModel) -> Bool {
+    lhs.id == rhs.id
+  }
+
   let id = UUID()
 
   var picture: Picture

@@ -32,3 +32,9 @@ struct DetailView: View {
     .navigationBarTitle("Picture", displayMode: .inline)
   }
 }
+
+struct DetailView_Previews: PreviewProvider {
+  static var previews: some View {
+    DetailView(userData: .constant(AppData().userData[0]))
+  }
+}
