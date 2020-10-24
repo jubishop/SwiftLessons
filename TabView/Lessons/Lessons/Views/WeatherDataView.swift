@@ -5,26 +5,24 @@ struct WeatherDataView: View {
   
   var body: some View {
     Group {
-      HStack(alignment: .top, spacing: 0) {
-        VStack(alignment: .leading, spacing: 10) {
-          Text("Precipitation:")
-          Text("Humidity:")
-          Text("Wind:")
-          Text("Pressure:")
-          Text("Visibility:")
-        }.frame(width: 120, alignment: .leading)
-        
-        VStack(alignment: .leading, spacing: 10) {
-          Text(city.precipitation)
-          Text(city.humidity)
-          Text(city.wind)
-          Text(city.pressure)
-          Text(city.visibility)
-        }.font(Font.body.weight(.semibold))
-      }.padding()
+      LazyVGrid(columns: [
+                  GridItem(.fixed(110)),
+                  GridItem(.flexible()),
+                ],
+                alignment: .leading,
+                spacing: 10) {
+        Text("Precipitation:"); Text(city.precipitation)
+        Text("Humidity:"); Text(city.humidity)
+        Text("Wind:"); Text(city.wind)
+        Text("Pressure:"); Text(city.pressure)
+        Text("Visibility:"); Text(city.visibility)
+      }
+      .padding()
     }
-    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-    .background(Color(red: 0.9, green: 0.9, blue: 0.9, opacity: 0.8))
+    .background(Color(red: 0.9,
+                      green: 0.9,
+                      blue: 0.9,
+                      opacity: 0.8))
     .cornerRadius(15)
     .padding()
   }
