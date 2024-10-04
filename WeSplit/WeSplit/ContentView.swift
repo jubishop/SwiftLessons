@@ -8,19 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
-  let tipPercentages = [10, 15, 20, 25, 0]
-
   @State private var checkAmount = 0.0
   @State private var numberOfPeople = 2
-  @State private var tipPercentage: Int
+  @State private var tipPercentage = 20.0
   @FocusState private var amountIsFocused: Bool
 
-  init() {
-    _tipPercentage = State(initialValue: tipPercentages[2])
-  }
-
   var grandTotal: Double {
-    let tipAmount = checkAmount * (Double(tipPercentage) / 100)
+    let tipAmount = checkAmount * (tipPercentage / 100)
     return checkAmount + tipAmount
   }
 
@@ -52,12 +46,10 @@ struct ContentView: View {
         }
 
         Section("How much tip do you want to leave?") {
-          Picker("Tip percentage", selection: $tipPercentage) {
-            ForEach(tipPercentages, id: \.self) {
-              Text($0, format: .percent)
-            }
+          Slider(value: $tipPercentage, in: 0...100, step: 1) {
+            Text("Tip percentage")
           }
-          .pickerStyle(.segmented)
+          Text("Tip: \(Int(tipPercentage))%")
         }
 
         Section("Check total") {
