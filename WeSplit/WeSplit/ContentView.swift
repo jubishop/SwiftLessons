@@ -13,13 +13,15 @@ struct ContentView: View {
   @State private var tipPercentage = 20.0
   @FocusState private var amountIsFocused: Bool
 
+  let peopleOptions = Array(2..<12)
+
   var grandTotal: Double {
     let tipAmount = checkAmount * (tipPercentage / 100)
     return checkAmount + tipAmount
   }
 
   var totalPerPerson: Double {
-    let peopleCount = Double(numberOfPeople + 2)
+    let peopleCount = Double(numberOfPeople)
     return grandTotal / peopleCount
   }
 
@@ -38,8 +40,9 @@ struct ContentView: View {
           }
 
           Picker("Number of people", selection: $numberOfPeople) {
-            ForEach(2..<12) {
-              Text("\($0) people")
+            ForEach(peopleOptions.indices, id: \.self) { index in
+              Text("\(peopleOptions[index]) people")
+                .tag(peopleOptions[index])
             }
           }
           .pickerStyle(.navigationLink)
