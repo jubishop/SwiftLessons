@@ -31,9 +31,11 @@ struct ContentView: View {
         Section {
           LabeledContent("Amount") {
             TextField(
-              "Amount", value: $checkAmount,
+              "Amount",
+              value: $checkAmount,
               format: .currency(
-                code: Locale.current.currency?.identifier ?? "USD")
+                code: Locale.current.currency?.identifier ?? "USD"
+              )
             )
             .keyboardType(.decimalPad)
             .focused($amountIsFocused)
@@ -59,14 +61,19 @@ struct ContentView: View {
           Text(
             grandTotal,
             format: .currency(
-              code: Locale.current.currency?.identifier ?? "USD"))
+              code: Locale.current.currency?.identifier ?? "USD"
+            )
+          )
+          .foregroundColor(tipPercentage > 0 ? .black : .red)
         }
 
         Section("Amount per person") {
           Text(
             totalPerPerson,
             format: .currency(
-              code: Locale.current.currency?.identifier ?? "USD"))
+              code: Locale.current.currency?.identifier ?? "USD"
+            )
+          )
         }
       }
       .navigationTitle("WeSplit")
