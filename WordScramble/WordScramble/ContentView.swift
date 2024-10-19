@@ -7,8 +7,6 @@ class GameState: ObservableObject {
 }
 
 struct ContentView: View {
-  @State private var isGameReady = false
-
   @StateObject private var gameState = GameState()
   @State private var usedWords: [String] = []
   @State private var rootWord = ""
@@ -42,7 +40,6 @@ struct ContentView: View {
       fatalError("start.txt is empty.")
     }
 
-    isGameReady = true
     beginNewGame()
   }
 
@@ -154,51 +151,43 @@ struct ContentView: View {
   }
 
   var body: some View {
-    if isGameReady {
-      NavigationStack {
-        List {
-          Section {
-            TextField("Enter your word", text: $newWord)
-              .onSubmit(addNewWord)
-              .textInputAutocapitalization(.never)
-              .autocorrectionDisabled()
-              .keyboardType(.alphabet)
-              .focused($isInputActive)
-          }
-
-          Section {
-            Text("Total Score: \(score)")
-          }
-
-          Section {
-            ForEach(usedWords, id: \.self) { word in
-              HStack {
-                Image(systemName: "\(word.count).circle")
-                Text(word)
-              }
-            }
-          }
+    NavigationStack {
+      List {
+        Section {
+          TextField("Enter your word", text: $newWord)
+            .onSubmit(addNewWord)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+            .keyboardType(.alphabet)
+            .focused($isInputActive)
         }
-        .navigationTitle(rootWord)
-        .toolbar {
-          ToolbarItem(placement: .primaryAction) {
-            Button("New Game") {
-              beginNewGame()
+
+        Section {
+          Text("Total Score: \(score)")
+        }
+
+        Section {
+          ForEach(usedWords, id: \.self) { word in
+            HStack {
+              Image(systemName: "\(word.count).circle")
+              Text(word)
             }
           }
         }
       }
+      .navigationTitle(rootWord)
+      .toolbar {
+        ToolbarItem(placement: .primaryAction) {
+          Button("New Game") {
+            beginNewGame()
+          }
+        }
+      }
+    }
 
-      .alert(errorTitle, isPresented: $showingError) {
-      } message: {
-        Text(errorMessage)
-      }
-    } else {
-      VStack {
-        ProgressView()
-        Text("Loading...").padding()
-      }
-      .onAppear(perform: startGame)
+    .alert(errorTitle, isPresented: $showingError) {
+    } message: {
+      Text(errorMessage)
     }
   }
 }
