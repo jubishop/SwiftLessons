@@ -1,9 +1,13 @@
 import SwiftUI
 
 struct FlagImage: View {
+  let country: String
+  let selectedCountry: String
+
   private let cornerRadius: CGFloat = 10
 
-  let country: String
+  var isSelected: Bool { selectedCountry == country }
+  var isSelectedOrEmpty: Bool { selectedCountry == "" || isSelected }
 
   var body: some View {
     Image(country)
@@ -13,6 +17,12 @@ struct FlagImage: View {
         RoundedRectangle(cornerRadius: CGFloat(cornerRadius))
           .stroke(Color.black, lineWidth: 1)
       )
+      .rotation3DEffect(
+        .degrees(isSelected ? 360 : 0),
+        axis: (x: 0, y: 1, z: 0)
+      )
+      .opacity(isSelectedOrEmpty ? 1 : 0.25)
+      .scaleEffect(isSelectedOrEmpty ? 1 : 0.25)
   }
 }
 
@@ -32,6 +42,7 @@ struct ContentView: View {
   ]
   .shuffled()
   @State private var correctAnswer = Int.random(in: 0...2)
+  @State private var selectedCountry = ""
 
   @State private var score = 0
   @State private var questionsAsked = 0
@@ -69,9 +80,15 @@ struct ContentView: View {
 
           ForEach(0..<3) { number in
             Button {
+              withAnimation(.easeInOut(duration: 2)) {
+                selectedCountry = countries[number]
+              }
               flagTapped(number)
             } label: {
-              FlagImage(country: countries[number])
+              FlagImage(
+                country: countries[number],
+                selectedCountry: selectedCountry
+              )
             }
           }
         }
@@ -103,6 +120,7 @@ struct ContentView: View {
     }
     countries.shuffle()
     correctAnswer = Int.random(in: 0...2)
+    selectedCountry = ""
   }
 
   func flagTapped(_ number: Int) {
