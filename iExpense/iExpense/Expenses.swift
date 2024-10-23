@@ -7,6 +7,14 @@ class Expenses {
   private static let storageKey = "Items"
   private(set) var items: [ExpenseItem] = []
 
+  var personalItems: [ExpenseItem] {
+    items.filter { $0.type == "Personal" }
+  }
+
+  var businessItems: [ExpenseItem] {
+    items.filter { $0.type == "Business" }
+  }
+
   init() {
     if let savedItems = UserDefaults.standard.data(forKey: Self.storageKey),
       let decodedItems = try? JSONDecoder().decode([ExpenseItem].self, from: savedItems)
@@ -15,8 +23,10 @@ class Expenses {
     }
   }
 
-  func removeItems(at offsets: IndexSet) {
-    items.remove(atOffsets: offsets)
+  func removeItems(at offsets: IndexSet, for type: String) {
+    let itemsToRemove = type == "Personal" ? personalItems : businessItems
+    let itemsToRemoveIds = offsets.map { itemsToRemove[$0].id }
+    items.removeAll { itemsToRemoveIds.contains($0.id) }
     storeItems()
   }
 
