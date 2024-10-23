@@ -3,7 +3,7 @@ import SwiftUI
 struct SettingsCitiesView: View {
   @EnvironmentObject var appData: AppData
   @Binding var selected: Int
-  
+
   var body: some View {
     Group {
       VStack(alignment: .leading, spacing: 10) {
@@ -16,7 +16,8 @@ struct SettingsCitiesView: View {
           }
         }
         Spacer()
-      }.padding()
+      }
+      .padding()
     }
     .frame(minWidth: 0, maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     .background(Color(red: 0.9, green: 0.9, blue: 0.9, opacity: 0.9))

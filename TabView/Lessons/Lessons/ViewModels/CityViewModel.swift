@@ -2,7 +2,7 @@ import Foundation
 
 struct CityViewModel {
   var city: City
-  
+
   var formatter: MeasurementFormatter {
     let format = MeasurementFormatter()
     format.unitStyle = .short
@@ -10,7 +10,7 @@ struct CityViewModel {
     return format
   }
   var name: String {
-    return city.name.capitalized
+    city.name.capitalized
   }
   var temperatureCelsius: String {
     let temperature = Measurement(value: city.weather.temperature, unit: UnitTemperature.celsius)
@@ -35,7 +35,7 @@ struct CityViewModel {
     return formatter.string(from: precipitation)
   }
   var humidity: String {
-    return "\(city.weather.humidity) %"
+    "\(city.weather.humidity) %"
   }
   var wind: String {
     let wind = Measurement(value: city.weather.wind, unit: UnitSpeed.kilometersPerHour)

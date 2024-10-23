@@ -2,10 +2,10 @@ import SwiftUI
 
 struct WeatherView: View {
   @EnvironmentObject var appData: AppData
-  
+
   var body: some View {
     let city = appData.userData[appData.selectedCity]
-    
+
     return ZStack {
       Image("clouds")
         .resizable()
@@ -20,13 +20,14 @@ struct WeatherView: View {
         WeatherDataView(city: city)
         WeatherFeelsView(city: city, celsius: appData.celsius)
         Spacer()
-      }.padding(.top, 80)
+      }
+      .padding(.top, 80)
     }
   }
 }
 
 struct WeatherView_Previews: PreviewProvider {
-   static var previews: some View {
-      WeatherView().environmentObject(AppData())
-   }
+  static var previews: some View {
+    WeatherView().environmentObject(AppData())
+  }
 }

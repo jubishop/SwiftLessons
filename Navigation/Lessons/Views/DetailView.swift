@@ -2,16 +2,18 @@ import SwiftUI
 
 struct DetailView: View {
   @Binding var userData: PictureViewModel
-  
+
   var body: some View {
     VStack {
       HStack {
         Text("Rating: ")
           .font(.subheadline)
-        Slider(value: $userData.picture.rating,
-               in: 0...5,
-               step: 1.0)
-          .frame(width: 150)
+        Slider(
+          value: $userData.picture.rating,
+          in: 0...5,
+          step: 1.0
+        )
+        .frame(width: 150)
         Text("\(userData.rating)")
           .font(.title)
           .fontWeight(.bold)
@@ -21,10 +23,12 @@ struct DetailView: View {
       Image(userData.picture.image)
         .resizable()
         .aspectRatio(contentMode: .fill)
-        .frame(minWidth: 0,
-               maxWidth: .infinity,
-               minHeight: 0,
-               maxHeight: .infinity)
+        .frame(
+          minWidth: 0,
+          maxWidth: .infinity,
+          minHeight: 0,
+          maxHeight: .infinity
+        )
         .clipped()
     }
     .padding(15)

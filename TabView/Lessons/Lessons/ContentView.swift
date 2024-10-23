@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-  @State private var selectedView:Int = 0
+  @State private var selectedView: Int = 0
 
   var body: some View {
     TabView(selection: $selectedView) {
@@ -9,12 +9,14 @@ struct ContentView: View {
         .tabItem({
           Image(systemName: "sun.max")
           Text("Weather")
-        }).tag(0)
+        })
+        .tag(0)
       SettingsView(selected: $selectedView)
         .tabItem({
           Image(systemName: "gear")
           Text("Settings")
-        }).tag(1)
+        })
+        .tag(1)
     }
     .edgesIgnoringSafeArea(.top)
   }

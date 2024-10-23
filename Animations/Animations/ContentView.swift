@@ -35,7 +35,7 @@ struct ContentView: View {
         .fill(.red)
         .frame(width: 200, height: 200)
         .pivot(isShowing: showingPages[0])
-      
+
       Rectangle()
         .fill(.orange)
         .frame(width: 200, height: 200)
@@ -43,11 +43,9 @@ struct ContentView: View {
     }
     .onTapGesture {
       withAnimation {
-        for pageNumber in 0..<showingPages.count {
-          if !showingPages[pageNumber] {
-            showingPages[pageNumber].toggle()
-            break
-          }
+        for pageNumber in 0..<showingPages.count where !showingPages[pageNumber] {
+          showingPages[pageNumber].toggle()
+          break
         }
       }
     }

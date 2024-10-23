@@ -3,7 +3,7 @@ import SwiftUI
 struct SettingsView: View {
   @EnvironmentObject var appData: AppData
   @Binding var selected: Int
-  
+
   var body: some View {
     ZStack {
       Image("seaside")
@@ -14,15 +14,14 @@ struct SettingsView: View {
       VStack {
         SettingsMeasurementView(celsius: $appData.celsius)
         SettingsCitiesView(selected: $selected)
-      }.foregroundColor(Color.black)
+      }
+      .foregroundColor(Color.black)
     }
   }
 }
-
 
 struct SettingsView_Previews: PreviewProvider {
   static var previews: some View {
     SettingsView(selected: .constant(1)).environmentObject(AppData())
   }
 }
-

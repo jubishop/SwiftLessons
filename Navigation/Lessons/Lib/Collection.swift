@@ -1,5 +1,5 @@
 extension Collection {
-  func enumeratedArray() -> Array<(offset: Int, element: Self.Element)> {
-    return Array(self.enumerated())
+  func enumeratedArray() -> [(offset: Int, element: Self.Element)] {
+    Array(self.enumerated())
   }
 }
