@@ -11,13 +11,16 @@ struct MissionView: View {
   @Binding var path: NavigationPath
   let crew: [CrewMember]
   let mission: Mission
+  let missions: [Mission]
 
   init(
     path: Binding<NavigationPath>,
     mission: Mission,
+    missions: [Mission],
     astronauts: [String: Astronaut]
   ) {
     self.mission = mission
+    self.missions = missions
     self.crew = mission.crew.map { member in
       if let astronaut = astronauts[member.name] {
         return CrewMember(role: member.role, astronaut: astronaut)
@@ -89,7 +92,11 @@ struct MissionView: View {
             }
           }
           .navigationDestination(for: Astronaut.self) { astronaut in
-            AstronautView(path: $path, astronaut: astronaut)
+            AstronautView(
+              path: $path,
+              astronaut: astronaut,
+              missions: missions
+            )
           }
         }
       }
@@ -109,6 +116,7 @@ struct MissionView: View {
     MissionView(
       path: .constant(NavigationPath()),
       mission: missions.randomElement()!,
+      missions: missions,
       astronauts: astronauts
     )
     .preferredColorScheme(.dark)

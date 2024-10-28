@@ -88,7 +88,12 @@ struct ContentView: View {
         }
       }
       .navigationDestination(for: Mission.self) { mission in
-        MissionView(path: $path, mission: mission, astronauts: astronauts)
+        MissionView(
+          path: $path,
+          mission: mission,
+          missions: missions,
+          astronauts: astronauts
+        )
       }
       .navigationTitle("Moonshot")
       .background(.darkBackground)
