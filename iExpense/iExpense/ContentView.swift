@@ -38,12 +38,16 @@ struct ContentView: View {
       }
       .navigationTitle("iExpense")
       .toolbar {
-        Button("Add Expense", systemImage: "plus") {
-          addingExpense.toggle()
+        ToolbarItem(placement: .primaryAction) {
+          NavigationLink {
+            AddView(expenses: expenses)
+          } label: {
+            HStack {
+              Image(systemName: "plus").font(.body.bold())
+              Text("Add Expense")
+            }
+          }
         }
-      }
-      .sheet(isPresented: $addingExpense) {
-        AddView(expenses: expenses)
       }
     }
   }
