@@ -3,6 +3,7 @@
 import SwiftUI
 
 struct AstronautView: View {
+  @Binding var path: NavigationPath
   let astronaut: Astronaut
 
   var body: some View {
@@ -25,6 +26,9 @@ struct AstronautView: View {
 #Preview {
   let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
 
-  AstronautView(astronaut: astronauts.randomElement()!.value)
-    .preferredColorScheme(.dark)
+  AstronautView(
+    path: .constant(NavigationPath()),
+    astronaut: astronauts.randomElement()!.value
+  )
+  .preferredColorScheme(.dark)
 }
