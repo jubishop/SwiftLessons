@@ -74,11 +74,13 @@ struct CheckoutView: View {
       alertConfig = .init(
         title: "Thank You",
         message: {
-          Text("Your order is placed")
+          Text(
+            "Your order for \(decodedOrder.quantity)x \(decodedOrder.type) cupcakes is on its way!"
+          )
         }
       )
     } catch {
-      fatalError("Checkout failed: \(error.localizedDescription)")
+      alertConfig = .init(title: "Error", message: { Text(error.localizedDescription) })
     }
   }
 }

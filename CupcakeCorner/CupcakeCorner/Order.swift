@@ -27,7 +27,22 @@ class Order: Codable {
     case _zip = "zip"
   }
 
-  // Order Details
+  init() {
+    loadAddress()
+  }
+
+  private var isBatchUpdating = false
+  @discardableResult
+  public func batchUpdate(_ updates: () throws -> Void) rethrows -> (() -> Void)? {
+    isBatchUpdating = true
+    defer { isBatchUpdating = false }
+    try updates()
+    return { [weak self] in
+      self?.saveAddress()
+    }
+  }
+
+  // MARK: - Order Details
   var type: CakeType = .vanilla
   var quantity = 3
   var specialRequestEnabled = false {
@@ -41,24 +56,38 @@ class Order: Codable {
   var extraFrosting = false
   var addSprinkles = false
 
-  // Address
-  var name = ""
-  var streetAddress = ""
-  var city = ""
-  var zip = ""
+  // MARK: - Address properties
+  var name = "" {
+    didSet {
+      saveAddress()
+    }
+  }
+  var streetAddress = "" {
+    didSet {
+      saveAddress()
+    }
+  }
+  var city = "" {
+    didSet {
+      saveAddress()
+    }
+  }
+  var zip = "" {
+    didSet {
+      saveAddress()
+    }
+  }
   var hasValidAddress: Bool {
     let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
     let trimmedStreet = streetAddress.trimmingCharacters(in: .whitespacesAndNewlines)
     let trimmedCity = city.trimmingCharacters(in: .whitespacesAndNewlines)
     let trimmedZip = zip.trimmingCharacters(in: .whitespacesAndNewlines)
-    
-    return !trimmedName.isEmpty &&
-      !trimmedStreet.isEmpty &&
-      !trimmedCity.isEmpty &&
-      !trimmedZip.isEmpty
+
+    return !trimmedName.isEmpty && !trimmedStreet.isEmpty && !trimmedCity.isEmpty
+      && !trimmedZip.isEmpty
   }
 
-  // Cost
+  // MARK: - Cost
   var cost: Decimal {
     // Cost for just the cake(s)
     let costPerCake: Decimal =
@@ -80,5 +109,41 @@ class Order: Codable {
     }
 
     return cost
+  }
+
+  // MARK: - Address Persistence
+  private struct AddressData: Codable {
+    var name: String
+    var streetAddress: String
+    var city: String
+    var zip: String
+  }
+  private func saveAddress() {
+    if isBatchUpdating { return }
+
+    let addressData = AddressData(
+      name: name,
+      streetAddress: streetAddress,
+      city: city,
+      zip: zip
+    )
+    print("saving address: \(addressData)")
+    if let encoded = try? JSONEncoder().encode(addressData) {
+      UserDefaults.standard.set(encoded, forKey: "User.address")
+    }
+  }
+  private func loadAddress() {
+    guard let data = UserDefaults.standard.data(forKey: "User.address"),
+      let addressData = try? JSONDecoder().decode(AddressData.self, from: data)
+    else {
+      return
+    }
+    print("loaded address: \(addressData)")
+    batchUpdate {
+      name = addressData.name
+      streetAddress = addressData.streetAddress
+      city = addressData.city
+      zip = addressData.zip
+    }
   }
 }
