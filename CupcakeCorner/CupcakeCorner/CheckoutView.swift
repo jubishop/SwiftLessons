@@ -4,18 +4,30 @@ import SwiftUI
 
 struct CheckoutView: View {
   var order: Order
-  @State private var confirmationMessage = ""
-  @State private var showingConfirmation = false
+  @State private var alertMessage = ""
+  @State private var alertTitle = ""
+  @State private var showingAlert = false
+  @State private var alertConfig: AlertConfig?
 
   var body: some View {
     ScrollView {
       VStack {
-        AsyncImage(url: URL(string: "https://hws.dev/img/cupcakes@3x.jpg"), scale: 3) { image in
-          image
-            .resizable()
-            .scaledToFit()
-        } placeholder: {
-          ProgressView()
+        AsyncImage(url: URL(string: "https://hws.dev/img/cupcakes@3x.jpg"), scale: 3) { phase in
+          switch phase {
+          case .success(let image):
+            image
+              .resizable()
+              .scaledToFit()
+
+          case .empty:
+            ProgressView()
+
+          default:
+            Image(systemName: "photo.fill")
+              .font(.system(size: 40))
+              .foregroundColor(.gray)
+              .frame(width: 100, height: 100)
+          }
         }
 
         Text("Your total is \(order.cost, format: .currency(code: "USD"))")
@@ -47,11 +59,12 @@ struct CheckoutView: View {
     .navigationTitle("Check out")
     .navigationBarTitleDisplayMode(.inline)
     .scrollBounceBehavior(.basedOnSize)
-    .alert("Thank you!", isPresented: $showingConfirmation) {
+    .alert(alertTitle, isPresented: $showingAlert) {
       Button("OK") {}
     } message: {
-      Text(confirmationMessage)
+      Text(alertMessage)
     }
+    .customAlert(config: $alertConfig)
   }
 
   func placeOrder() async {
@@ -66,9 +79,20 @@ struct CheckoutView: View {
     do {
       let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
       let decodedOrder = try JSONDecoder().decode(Order.self, from: data)
-      confirmationMessage =
-        "Your order for \(decodedOrder.quantity) \(decodedOrder.type) cupcakes is on its way!"
-      showingConfirmation = true
+      alertConfig = .init(
+        title: "Thank You",
+        message: {
+          Text("Your order is placed")
+        },
+        actions: {
+          Button("OK") {
+          }
+        }
+      )
+//      alertTitle = "Thank You"
+//      alertMessage =
+//        "Your order for \(decodedOrder.quantity) \(decodedOrder.type) cupcakes is on its way!"
+//      showingAlert = true
     } catch {
       fatalError("Checkout failed: \(error.localizedDescription)")
     }
@@ -80,4 +104,3 @@ struct CheckoutView: View {
     CheckoutView(order: Order())
   }
 }
-

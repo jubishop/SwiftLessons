@@ -15,6 +15,18 @@ enum CakeType: String, CaseIterable, Codable {
 
 @Observable
 class Order: Codable {
+  enum CodingKeys: String, CodingKey {
+    case _type = "type"
+    case _quantity = "quantity"
+    case _specialRequestEnabled = "specialRequestEnabled"
+    case _extraFrosting = "extraFrosting"
+    case _addSprinkles = "addSprinkles"
+    case _name = "name"
+    case _city = "city"
+    case _streetAddress = "streetAddress"
+    case _zip = "zip"
+  }
+
   // Order Details
   var type: CakeType = .vanilla
   var quantity = 3
@@ -35,7 +47,15 @@ class Order: Codable {
   var city = ""
   var zip = ""
   var hasValidAddress: Bool {
-    !name.isEmpty && !streetAddress.isEmpty && !city.isEmpty && !zip.isEmpty
+    let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+    let trimmedStreet = streetAddress.trimmingCharacters(in: .whitespacesAndNewlines)
+    let trimmedCity = city.trimmingCharacters(in: .whitespacesAndNewlines)
+    let trimmedZip = zip.trimmingCharacters(in: .whitespacesAndNewlines)
+    
+    return !trimmedName.isEmpty &&
+      !trimmedStreet.isEmpty &&
+      !trimmedCity.isEmpty &&
+      !trimmedZip.isEmpty
   }
 
   // Cost
