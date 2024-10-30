@@ -5,7 +5,7 @@ import SwiftUI
 
 struct AlertConfig {
   let title: String
-  var message: () -> any View
+  var message: () -> any View = { EmptyView() }
   var actions: () -> any View = { Button("OK", action: {}) }
 }
 
