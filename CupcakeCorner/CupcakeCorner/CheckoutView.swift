@@ -4,9 +4,6 @@ import SwiftUI
 
 struct CheckoutView: View {
   var order: Order
-  @State private var alertMessage = ""
-  @State private var alertTitle = ""
-  @State private var showingAlert = false
   @State private var alertConfig: AlertConfig?
 
   var body: some View {
@@ -59,11 +56,6 @@ struct CheckoutView: View {
     .navigationTitle("Check out")
     .navigationBarTitleDisplayMode(.inline)
     .scrollBounceBehavior(.basedOnSize)
-    .alert(alertTitle, isPresented: $showingAlert) {
-      Button("OK") {}
-    } message: {
-      Text(alertMessage)
-    }
     .customAlert(config: $alertConfig)
   }
 
@@ -83,16 +75,8 @@ struct CheckoutView: View {
         title: "Thank You",
         message: {
           Text("Your order is placed")
-        },
-        actions: {
-          Button("OK") {
-          }
         }
       )
-//      alertTitle = "Thank You"
-//      alertMessage =
-//        "Your order for \(decodedOrder.quantity) \(decodedOrder.type) cupcakes is on its way!"
-//      showingAlert = true
     } catch {
       fatalError("Checkout failed: \(error.localizedDescription)")
     }

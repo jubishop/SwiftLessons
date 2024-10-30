@@ -6,7 +6,7 @@ import SwiftUI
 struct AlertConfig {
   let title: String
   var message: () -> any View
-  var actions: () -> any View
+  var actions: () -> any View = { Button("OK", action: {}) }
 }
 
 extension View {
@@ -24,15 +24,11 @@ extension View {
       actions: {
         if let actions = config.wrappedValue?.actions() {
           AnyView(actions)
-        } else {
-          Button("OK") {}
         }
       },
       message: {
         if let message = config.wrappedValue?.message() {
           AnyView(message)
-        } else {
-          Text("")
         }
       }
     )
