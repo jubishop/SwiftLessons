@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8B0920B52CD2F4850050CF9F /* JubiSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8B0920B42CD2F4850050CF9F /* JubiSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		8B5F15EF2CD145F0007111C1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B0920B52CD2F4850050CF9F /* JubiSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = CupcakeCorner;
 			packageProductDependencies = (
+				8B0920B42CD2F4850050CF9F /* JubiSwift */,
 			);
 			productName = CupcakeCorner;
 			productReference = 8B5F15DE2CD145EF007111C1 /* CupcakeCorner.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 8B5F15D52CD145EF007111C1;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8B0920B32CD2F4850050CF9F /* XCRemoteSwiftPackageReference "JubiSwift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8B5F15DF2CD145EF007111C1 /* Products */;
 			projectDirPath = "";
@@ -560,6 +569,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8B0920B32CD2F4850050CF9F /* XCRemoteSwiftPackageReference "JubiSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jubishop/JubiSwift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8B0920B42CD2F4850050CF9F /* JubiSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8B0920B32CD2F4850050CF9F /* XCRemoteSwiftPackageReference "JubiSwift" */;
+			productName = JubiSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8B5F15D62CD145EF007111C1 /* Project object */;
 }

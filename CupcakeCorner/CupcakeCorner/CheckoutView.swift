@@ -1,5 +1,6 @@
 // Copyright Justin Bishop, 2024
 
+import JubiSwift
 import SwiftUI
 
 struct CheckoutView: View {
