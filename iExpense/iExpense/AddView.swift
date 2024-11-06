@@ -3,21 +3,22 @@
 import SwiftUI
 
 struct AddView: View {
+  @Environment(\.modelContext) var modelContext
   @Environment(\.dismiss) var dismiss
-  var expenses: Expenses
-  @State private var name = "Expense Name"
-  @State private var type = "Personal"
-  @State private var amount = 0.0
 
-  let types = ["Business", "Personal"]
+  @State private var name = ""
+  @State private var type = Expense.ExpenseType.business
+  @State private var amount = 0.0
 
   var body: some View {
     NavigationStack {
       VStack {
         Form {
+          TextField("Expense Name", text: $name)
+
           Picker("Type", selection: $type) {
-            ForEach(types, id: \.self) { type in
-              Text(type)
+            ForEach(Expense.ExpenseType.allCases, id: \.self) { type in
+              Text(type.rawValue).tag(type)
             }
           }
 
@@ -30,7 +31,7 @@ struct AddView: View {
 
           Section {
             Button(action: {
-              expenses.addItem(ExpenseItem(name: name, type: type, amount: amount))
+              modelContext.insert(Expense(name: name, type: type, amount: amount))
               dismiss()
             }) {
               HStack {
@@ -42,7 +43,7 @@ struct AddView: View {
           }
         }
       }
-      .navigationTitle($name)
+      .navigationTitle("Add Expense")
       .navigationBarTitleDisplayMode(.inline)
       .navigationBarBackButtonHidden(true)
       .toolbar {
@@ -57,5 +58,5 @@ struct AddView: View {
 }
 
 #Preview {
-  AddView(expenses: Expenses())
+  AddView().modelContainer(DataController.previewContainer)
 }

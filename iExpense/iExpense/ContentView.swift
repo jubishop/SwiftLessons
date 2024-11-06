@@ -1,5 +1,6 @@
 // Copyright Justin Bishop, 2024
 
+import SwiftData
 import SwiftUI
 
 struct CurrencyStyle: ViewModifier {
@@ -19,28 +20,64 @@ extension View {
 }
 
 struct ContentView: View {
-  @State private var addingExpense = false
-  @State private var expenses = Expenses()
+  @Environment(\.modelContext) var modelContext
+  @State private var sortOrder = [
+    SortDescriptor(\Expense.amount, order: .reverse),
+    SortDescriptor(\Expense.name),
+  ]
+  @Query var businessExpenses: [Expense]
+  @Query var personalExpenses: [Expense]
+
+  init() {
+    let businessValue = Expense.ExpenseType.business.rawValue
+    let personalValue = Expense.ExpenseType.personal.rawValue
+
+    _businessExpenses = Query(
+      filter: #Predicate<Expense> { expense in
+        expense.typeRawValue == businessValue
+      },
+      sort: sortOrder
+    )
+    _personalExpenses = Query(
+      filter: #Predicate<Expense> { expense in
+        expense.typeRawValue == personalValue
+      },
+      sort: sortOrder
+    )
+  }
 
   var body: some View {
     NavigationStack {
       List {
         ExpenseSection(
           title: "Personal",
-          items: expenses.personalItems,
-          expenses: expenses
+          expenses: personalExpenses
         )
         ExpenseSection(
           title: "Business",
-          items: expenses.businessItems,
-          expenses: expenses
+          expenses: businessExpenses
         )
       }
       .navigationTitle("iExpense")
       .toolbar {
+        ToolbarItem() {
+          Picker("Sort", selection: $sortOrder) {
+            Text("Sort by Name")
+              .tag([
+                SortDescriptor(\Expense.name),
+                SortDescriptor(\Expense.amount, order: .reverse),
+              ])
+            
+            Text("Sort by Amount")
+              .tag([
+                SortDescriptor(\Expense.amount, order: .reverse),
+                SortDescriptor(\Expense.name),
+              ])
+          }
+        }
         ToolbarItem(placement: .primaryAction) {
           NavigationLink {
-            AddView(expenses: expenses)
+            AddView()
           } label: {
             HStack {
               Image(systemName: "plus").font(.body.bold())
@@ -54,32 +91,34 @@ struct ContentView: View {
 }
 
 struct ExpenseSection: View {
+  @Environment(\.modelContext) var modelContext
   let title: String
-  let items: [ExpenseItem]
-  var expenses: Expenses
+  var expenses: [Expense]
 
   var body: some View {
     Section(title) {
-      ForEach(items) { item in
+      ForEach(expenses) { expense in
         HStack {
           VStack(alignment: .leading) {
-            Text(item.name).font(.headline)
+            Text(expense.name).font(.headline)
           }
           Spacer()
           Text(
-            item.amount,
+            expense.amount,
             format: .currency(code: Locale.current.currency?.identifier ?? "USD")
           )
-          .currencyStyle(for: item.amount)
+          .currencyStyle(for: expense.amount)
         }
       }
       .onDelete { indexSet in
-        expenses.removeItems(at: indexSet, for: title)
+        for index in indexSet {
+          modelContext.delete(expenses[index])
+        }
       }
     }
   }
 }
 
 #Preview {
-  ContentView()
+  ContentView().modelContainer(DataController.previewContainer)
 }

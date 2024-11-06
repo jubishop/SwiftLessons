@@ -1,12 +1,13 @@
 // Copyright Justin Bishop, 2024
 
+import SwiftData
 import SwiftUI
 
 @main
 struct iExpenseApp: App {
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView().modelContainer(for: Expense.self)
     }
   }
 }
