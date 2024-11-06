@@ -5,23 +5,15 @@ import SwiftData
 
 @Model
 class Expense {
-  enum ExpenseType: String, Codable, CaseIterable {
-    case business = "Business"
-    case personal = "Personal"
-  }
-  
+  static let types = ["Business", "Personal"]
+
   var name: String
-  var typeRawValue: String // ExpenseType
+  var type: String
   var amount: Double
   
-  var type: ExpenseType {
-    get { ExpenseType(rawValue: typeRawValue)! }
-    set { typeRawValue = newValue.rawValue }
-  }
-  
-  init(name: String, type: ExpenseType, amount: Double) {
+  init(name: String, type: String, amount: Double) {
     self.name = name
-    self.typeRawValue = type.rawValue
+    self.type = type
     self.amount = amount
   }
 }

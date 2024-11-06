@@ -21,30 +21,18 @@ extension View {
 
 struct ContentView: View {
   @Environment(\.modelContext) var modelContext
-  @State private var sortOrder = [
-    SortDescriptor(\Expense.amount, order: .reverse),
-    SortDescriptor(\Expense.name),
-  ]
-  @Query var businessExpenses: [Expense]
-  @Query var personalExpenses: [Expense]
-
-  init() {
-    let businessValue = Expense.ExpenseType.business.rawValue
-    let personalValue = Expense.ExpenseType.personal.rawValue
-
-    _businessExpenses = Query(
-      filter: #Predicate<Expense> { expense in
-        expense.typeRawValue == businessValue
-      },
-      sort: sortOrder
-    )
-    _personalExpenses = Query(
-      filter: #Predicate<Expense> { expense in
-        expense.typeRawValue == personalValue
-      },
-      sort: sortOrder
-    )
-  }
+  
+  static let sortOrder = [SortDescriptor(\Expense.amount, order: .reverse)]
+  @Query(
+    filter: #Predicate<Expense> { expense in
+      expense.type == "Business"
+    }, sort: Self.sortOrder
+  ) var businessExpenses: [Expense]
+  @Query(
+    filter: #Predicate<Expense> { expense in
+      expense.type == "Personal"
+    }, sort: Self.sortOrder
+  ) var personalExpenses: [Expense]
 
   var body: some View {
     NavigationStack {
@@ -60,21 +48,6 @@ struct ContentView: View {
       }
       .navigationTitle("iExpense")
       .toolbar {
-        ToolbarItem() {
-          Picker("Sort", selection: $sortOrder) {
-            Text("Sort by Name")
-              .tag([
-                SortDescriptor(\Expense.name),
-                SortDescriptor(\Expense.amount, order: .reverse),
-              ])
-            
-            Text("Sort by Amount")
-              .tag([
-                SortDescriptor(\Expense.amount, order: .reverse),
-                SortDescriptor(\Expense.name),
-              ])
-          }
-        }
         ToolbarItem(placement: .primaryAction) {
           NavigationLink {
             AddView()

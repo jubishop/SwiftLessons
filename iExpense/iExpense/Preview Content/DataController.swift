@@ -14,7 +14,7 @@ class DataController {
       for i in 1...9 {
         let expense = Expense(
           name: "Name \(i)",
-          type: i % 2 == 0 ? Expense.ExpenseType.business : Expense.ExpenseType.personal,
+          type: Expense.types[i % 2],
           amount: Double(i * 2)
         )
         container.mainContext.insert(expense)

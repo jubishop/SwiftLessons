@@ -7,7 +7,7 @@ struct AddView: View {
   @Environment(\.dismiss) var dismiss
 
   @State private var name = ""
-  @State private var type = Expense.ExpenseType.business
+  @State private var type = Expense.types.randomElement()!
   @State private var amount = 0.0
 
   var body: some View {
@@ -17,8 +17,8 @@ struct AddView: View {
           TextField("Expense Name", text: $name)
 
           Picker("Type", selection: $type) {
-            ForEach(Expense.ExpenseType.allCases, id: \.self) { type in
-              Text(type.rawValue).tag(type)
+            ForEach(Expense.types, id: \.self) { type in
+              Text(type)
             }
           }
 
