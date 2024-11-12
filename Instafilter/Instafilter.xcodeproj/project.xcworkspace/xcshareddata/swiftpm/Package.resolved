@@ -1,0 +1,15 @@
+{
+  "originHash" : "ed44e3a7bc312f058ff2b3ba205c67317a9e9c85582ded1c0eff772d30883582",
+  "pins" : [
+    {
+      "identity" : "jubiswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jubishop/JubiSwift",
+      "state" : {
+        "branch" : "main",
+        "revision" : "284bbfa32fc42063652aad03a53329b78e601eba"
+      }
+    }
+  ],
+  "version" : 3
+}
