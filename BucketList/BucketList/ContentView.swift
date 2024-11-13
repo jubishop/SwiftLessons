@@ -1,11 +1,14 @@
 // Copyright Justin Bishop, 2024
 
+import JubiSwift
+import LocalAuthentication
 import MapKit
 import SwiftUI
 
 struct ContentView: View {
   @State private var viewModel = ViewModel()
   @State private var selectedMapStyle: CustomMapStyle = .standard
+  @State private var alertConfig: AlertConfig?
 
   let startPosition = MapCameraPosition.region(
     MKCoordinateRegion(
@@ -24,11 +27,11 @@ struct ContentView: View {
                 Image(systemName: "star.circle")
                   .resizable()
                   .foregroundStyle(.red)
-                  .frame(width: 44, height: 44)
+                  .frame(width: 32, height: 32)
                   .background(.white)
                   .clipShape(.circle)
                   .simultaneousGesture(
-                    LongPressGesture(minimumDuration: 1)
+                    LongPressGesture(minimumDuration: 0.5)
                       .onEnded { _ in viewModel.selectedPlace = location }
                   )
                 // TODO: Replace with this:
@@ -63,17 +66,28 @@ struct ContentView: View {
               .padding(4)
               .background(Color.white)
               .cornerRadius(8)
-            }.padding(.trailing)
+            }
+            .padding(.trailing)
           }
           .padding(.top)
         }
       }
     } else {
-      Button("Unlock Places", action: viewModel.authenticate)
-        .padding()
-        .background(.blue)
-        .foregroundStyle(.white)
-        .clipShape(.capsule)
+      Button("Unlock Places") {
+        viewModel.authenticate(LAContext()) { error in
+          alertConfig = AlertConfig(
+            title: "Error",
+            message: {
+              Text(error?.localizedDescription ?? "Unknown Authentication Error")
+            }
+          )
+        }
+      }
+      .padding()
+      .background(.blue)
+      .foregroundStyle(.white)
+      .clipShape(.capsule)
+      .customAlert(config: $alertConfig)
     }
   }
 }

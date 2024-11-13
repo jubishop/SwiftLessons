@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8B474FFA2CE41FFC00E7FB64 /* JubiSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8B474FF92CE41FFC00E7FB64 /* JubiSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		8B7B96162CE2815B00C7EB0F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B474FFA2CE41FFC00E7FB64 /* JubiSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = BucketList;
 			packageProductDependencies = (
+				8B474FF92CE41FFC00E7FB64 /* JubiSwift */,
 			);
 			productName = BucketList;
 			productReference = 8B7B96052CE2815A00C7EB0F /* BucketList.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 8B7B95FC2CE2815A00C7EB0F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8B474FF82CE41FFC00E7FB64 /* XCRemoteSwiftPackageReference "JubiSwift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8B7B96062CE2815A00C7EB0F /* Products */;
 			projectDirPath = "";
@@ -560,6 +569,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8B474FF82CE41FFC00E7FB64 /* XCRemoteSwiftPackageReference "JubiSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jubishop/JubiSwift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8B474FF92CE41FFC00E7FB64 /* JubiSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8B474FF82CE41FFC00E7FB64 /* XCRemoteSwiftPackageReference "JubiSwift" */;
+			productName = JubiSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8B7B95FD2CE2815A00C7EB0F /* Project object */;
 }

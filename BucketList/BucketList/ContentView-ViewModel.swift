@@ -9,7 +9,7 @@ extension ContentView {
   @Observable
   class ViewModel {
     var isUnlocked = false
-    private let savePath = URL.documentsDirectory.appending(path: "SavedPlaces")
+    var selectedPlace: Location?
 
     private(set) var locations: [Location] {
       didSet {
@@ -17,7 +17,7 @@ extension ContentView {
       }
     }
 
-    var selectedPlace: Location?
+    private let savePath = URL.documentsDirectory.appending(path: "SavedPlaces")
 
     init() {
       do {
@@ -26,13 +26,15 @@ extension ContentView {
       } catch {
         locations = []
       }
+
       #if DEBUG
-        isUnlocked = true
+        if ProcessInfo.isRunningInPreview {
+          isUnlocked = true
+        }
       #endif
     }
 
-    func authenticate() {
-      let context = LAContext()
+    func authenticate(_ context: LAContext, onFailure: @escaping (Error?) -> Void) {
       var error: NSError?
 
       if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
@@ -45,11 +47,11 @@ extension ContentView {
           if success {
             self.isUnlocked = true
           } else {
-            print(authenticationError?.localizedDescription ?? "Failed to unlock.")
+            onFailure(authenticationError)
           }
         }
       } else {
-        print(error?.localizedDescription ?? "No biometrics.")
+        onFailure(error)
       }
     }
 
@@ -68,11 +70,9 @@ extension ContentView {
 
     func addLocation(at point: CLLocationCoordinate2D) {
       let newLocation = Location(
-        id: UUID(),
         name: "New location",
         description: "",
-        latitude: point.latitude,
-        longitude: point.longitude
+        point: point
       )
       locations.append(newLocation)
     }
