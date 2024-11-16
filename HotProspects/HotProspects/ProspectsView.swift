@@ -20,7 +20,6 @@ struct ProspectsView: View {
   @State private var sortType = SortType.name
   @State private var selectedProspects = Set<Prospect>()
   @State private var isShowingScanner = false
-  @State private var editMode: EditMode = .inactive
 
   var title: String {
     switch filter {
@@ -38,10 +37,8 @@ struct ProspectsView: View {
       ProspectsListView(
         filter: filter,
         sortType: sortType,
-        selectedProspects: $selectedProspects,
-        editMode: $editMode
+        selectedProspects: $selectedProspects
       )
-
       .navigationTitle(title)
       .toolbar {
         ToolbarItem(placement: .topBarTrailing) {

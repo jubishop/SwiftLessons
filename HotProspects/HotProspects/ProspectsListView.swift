@@ -11,18 +11,15 @@ struct ProspectsListView: View {
   @Environment(\.modelContext) var modelContext
   @Query private var prospects: [Prospect]
   @Binding var selectedProspects: Set<Prospect>
-  @Binding var editMode: EditMode
 
   init(
     filter: FilterType,
     sortType: SortType,
-    selectedProspects: Binding<Set<Prospect>>,
-    editMode: Binding<EditMode>
+    selectedProspects: Binding<Set<Prospect>>
   ) {
     self.filter = filter
     self.sortType = sortType
     self._selectedProspects = selectedProspects
-    self._editMode = editMode
 
     let currentSort: [SortDescriptor<Prospect>] =
       switch sortType {
@@ -97,7 +94,6 @@ struct ProspectsListView: View {
         }
       )
     }
-    .environment(\.editMode, $editMode)
   }
 
   func addNotification(for prospect: Prospect) {
@@ -139,8 +135,7 @@ struct ProspectsListView: View {
   ProspectsListView(
     filter: .none,
     sortType: .name,
-    selectedProspects: .constant(Set<Prospect>()),
-    editMode: .constant(.inactive)
+    selectedProspects: .constant(Set<Prospect>())
   )
   .modelContainer(DataController.previewContainer)
 }
