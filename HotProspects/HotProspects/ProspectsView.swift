@@ -62,9 +62,7 @@ struct ProspectsView: View {
         }
 
         ToolbarItem(placement: .topBarLeading) {
-          Button("Edit") {
-            editMode = .active
-          }
+          EditButton()
         }
 
         if selectedProspects.isEmpty == false {
