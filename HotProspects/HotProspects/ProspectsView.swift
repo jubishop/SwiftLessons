@@ -20,7 +20,8 @@ struct ProspectsView: View {
   @State private var sortType = SortType.name
   @State private var selectedProspects = Set<Prospect>()
   @State private var isShowingScanner = false
-
+  @State private var path = NavigationPath()
+  
   var title: String {
     switch filter {
     case .none:
@@ -33,13 +34,17 @@ struct ProspectsView: View {
   }
 
   var body: some View {
-    NavigationStack {
+    NavigationStack(path: $path) {
       ProspectsListView(
+        path: $path,
         filter: filter,
         sortType: sortType,
         selectedProspects: $selectedProspects
       )
       .navigationTitle(title)
+      .navigationDestination(for: Prospect.self) { prospect in
+        EditView(prospect: prospect)
+      }
       .toolbar {
         ToolbarItem(placement: .topBarTrailing) {
           Menu {

@@ -4,9 +4,6 @@ import SwiftData
 import SwiftUI
 
 struct EditView: View {
-  @Environment(\.modelContext) var modelContext
-  @Environment(\.dismiss) var dismiss
-  
   @State var prospect: Prospect
   
   var body: some View {
@@ -14,10 +11,6 @@ struct EditView: View {
       TextField("Name", text: $prospect.name)
       TextField("Email Address", text: $prospect.emailAddress)
       Toggle("Contacted", isOn: $prospect.isContacted)
-      Button("Save") {
-        try? modelContext.save()
-        dismiss()
-      }
     }
   }
 }

@@ -10,13 +10,16 @@ struct ProspectsListView: View {
 
   @Environment(\.modelContext) var modelContext
   @Query private var prospects: [Prospect]
+  @Binding var path: NavigationPath
   @Binding var selectedProspects: Set<Prospect>
 
   init(
+    path: Binding<NavigationPath>,
     filter: FilterType,
     sortType: SortType,
     selectedProspects: Binding<Set<Prospect>>
   ) {
+    self._path = path
     self.filter = filter
     self.sortType = sortType
     self._selectedProspects = selectedProspects
@@ -47,52 +50,53 @@ struct ProspectsListView: View {
 
   var body: some View {
     List(prospects, selection: $selectedProspects) { prospect in
-      NavigationLink(
-        destination: { EditView(prospect: prospect) },
-        label: {
-          HStack {
-            VStack(alignment: .leading) {
-              Text(prospect.name)
-                .font(.headline)
-              Text(prospect.emailAddress)
-                .foregroundStyle(.secondary)
-            }
-            Spacer()
-            if filter == .none {
-              if prospect.isContacted {
-                Image(systemName: "checkmark.circle.fill")
-                  .foregroundStyle(.green)
-              } else {
-                Image(systemName: "x.circle.fill")
-                  .foregroundStyle(.red)
-              }
-            }
-          }
-          .tag(prospect)
-          .swipeActions {
-            Button("Delete", systemImage: "trash", role: .destructive) {
-              modelContext.delete(prospect)
-            }
-
-            if prospect.isContacted {
-              Button("Mark Uncontacted", systemImage: "person.crop.circle.badge.xmark") {
-                prospect.isContacted.toggle()
-              }
-              .tint(.blue)
-            } else {
-              Button("Mark Contacted", systemImage: "person.crop.circle.fill.badge.checkmark") {
-                prospect.isContacted.toggle()
-              }
-              .tint(.green)
-            }
-
-            Button("Remind Me", systemImage: "bell") {
-              addNotification(for: prospect)
-            }
-            .tint(.orange)
+      HStack {
+        VStack(alignment: .leading) {
+          Text(prospect.name)
+            .font(.headline)
+          Text(prospect.emailAddress)
+            .foregroundStyle(.secondary)
+        }
+        Spacer()
+        if filter == .none {
+          if prospect.isContacted {
+            Image(systemName: "checkmark.circle.fill")
+              .foregroundStyle(.green)
+          } else {
+            Image(systemName: "x.circle.fill")
+              .foregroundStyle(.red)
           }
         }
-      )
+        Image(systemName: "chevron.right")
+      }
+      .tag(prospect)
+      .contentShape(Rectangle())
+      .onTapGesture {
+        path.append(prospect)
+      }
+      .swipeActions(edge: .leading) {
+        if prospect.isContacted {
+          Button("Mark Uncontacted", systemImage: "person.crop.circle.badge.xmark") {
+            prospect.isContacted.toggle()
+          }
+          .tint(.blue)
+        } else {
+          Button("Mark Contacted", systemImage: "person.crop.circle.fill.badge.checkmark") {
+            prospect.isContacted.toggle()
+          }
+          .tint(.green)
+        }
+      }
+      .swipeActions(edge: .trailing) {
+        Button("Delete", systemImage: "trash", role: .destructive) {
+          modelContext.delete(prospect)
+        }
+
+        Button("Remind Me", systemImage: "bell") {
+          addNotification(for: prospect)
+        }
+        .tint(.orange)
+      }
     }
   }
 
@@ -133,6 +137,7 @@ struct ProspectsListView: View {
 
 #Preview {
   ProspectsListView(
+    path: .constant(NavigationPath()),
     filter: .none,
     sortType: .name,
     selectedProspects: .constant(Set<Prospect>())
