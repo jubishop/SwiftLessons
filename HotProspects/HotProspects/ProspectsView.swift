@@ -10,10 +10,15 @@ struct ProspectsView: View {
     case none, contacted, uncontacted
   }
 
+  enum SortType {
+    case name, dateAdded
+  }
+
   let filter: FilterType
 
   @Environment(\.modelContext) var modelContext
-  @Query var prospects: [Prospect]
+  @Query private var prospects: [Prospect]
+  @State private var sortType = SortType.name
   @State private var selectedProspects = Set<Prospect>()
   @State private var isShowingScanner = false
 
@@ -28,27 +33,33 @@ struct ProspectsView: View {
     }
   }
 
-  init(filter: FilterType) {
-    self.filter = filter
+  private var currentSort: [SortDescriptor<Prospect>] {
+    switch sortType {
+    case .name:
+      return [SortDescriptor(\Prospect.name)]
+    case .dateAdded:
+      return [
+        SortDescriptor(\Prospect.dateAdded, order: .reverse),
+        SortDescriptor(\Prospect.name),
+      ]
+    }
+  }
 
+  private var filterPredicate: Predicate<Prospect>? {
     switch filter {
     case .none:
-      _prospects = Query(sort: \Prospect.name)
+      return nil
     case .contacted:
-      _prospects = Query(
-        filter: #Predicate { prospect in
-          prospect.isContacted
-        },
-        sort: [SortDescriptor(\Prospect.name)]
-      )
+      return #Predicate { prospect in prospect.isContacted }
     case .uncontacted:
-      _prospects = Query(
-        filter: #Predicate { prospect in
-          !prospect.isContacted
-        },
-        sort: [SortDescriptor(\Prospect.name)]
-      )
+      return #Predicate { prospect in !prospect.isContacted }
     }
+  }
+
+  init(filter: FilterType) {
+    self.filter = filter
+    
+    _prospects = Query(filter: filterPredicate, sort: currentSort)
   }
 
   var body: some View {
@@ -103,6 +114,17 @@ struct ProspectsView: View {
       }
       .navigationTitle(title)
       .toolbar {
+        ToolbarItem(placement: .topBarTrailing) {
+          Menu {
+            Picker("Sort", selection: $sortType) {
+              Label("Sort by Name", systemImage: "textformat").tag(SortType.name)
+              Label("Sort by Date Added", systemImage: "calendar").tag(SortType.dateAdded)
+            }
+          } label: {
+            Label("Sort", systemImage: "arrow.up.arrow.down")
+          }
+        }
+
         ToolbarItem(placement: .topBarTrailing) {
           Button("Scan", systemImage: "qrcode.viewfinder") {
             isShowingScanner = true
@@ -176,7 +198,11 @@ struct ProspectsView: View {
       let details = result.string.components(separatedBy: "\n")
       guard details.count == 2 else { return }
 
-      let person = Prospect(name: details[0], emailAddress: details[1], isContacted: false)
+      let person = Prospect(
+        name: details[0],
+        emailAddress: details[1],
+        isContacted: false
+      )
       modelContext.insert(person)
     case .failure(let error):
       print("Scanning failed: \(error.localizedDescription)")
