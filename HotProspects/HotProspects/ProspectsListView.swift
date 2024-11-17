@@ -70,7 +70,7 @@ struct ProspectsListView: View {
         Image(systemName: "chevron.right")
       }
       .tag(prospect)
-      .contentShape(Rectangle()) // Required for onTapGesture to hit entire Rectangle.
+      .contentShape(.rect) // Required for onTapGesture to hit entire Rectangle.
       .onTapGesture {
         path.append(prospect)
       }
