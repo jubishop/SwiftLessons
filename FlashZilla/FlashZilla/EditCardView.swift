@@ -1,8 +1,23 @@
 // Copyright Justin Bishop, 2024
 
+import GRDB
 import SwiftUI
 
 struct EditCardView: View {
+  let dbQueue: DatabaseQueue
+
+  init() {
+    do {
+      dbQueue = try DatabaseQueue(
+        path: URL.documentsDirectory
+          .appending(path: "db.sqlite")
+          .absoluteString
+      )
+    } catch {
+      fatalError(error.localizedDescription)
+    }
+  }
+
   @Environment(\.dismiss) var dismiss
   @State private var cards: [Card] = []
   @State private var newPrompt = ""
@@ -26,7 +41,7 @@ struct EditCardView: View {
                 .foregroundStyle(.secondary)
             }
           }
-          .onDelete(perform: removeCards)
+          .onDelete(perform: deleteCards)
         }
       }
       .navigationTitle("Edit Cards")
@@ -42,16 +57,20 @@ struct EditCardView: View {
   }
 
   func loadData() {
-    if let data = UserDefaults.standard.data(forKey: "Cards") {
-      if let decoded = try? JSONDecoder().decode([Card].self, from: data) {
-        cards = decoded
+    do {
+      cards = try dbQueue.read { db in
+        try Card.fetchAll(db)
       }
+    } catch {
+      fatalError(error.localizedDescription)
     }
   }
 
-  func saveData() {
-    if let data = try? JSONEncoder().encode(cards) {
-      UserDefaults.standard.set(data, forKey: "Cards")
+  private func performWrite(_ block: @escaping (Database) throws -> Void) {
+    do {
+      try dbQueue.write(block)
+    } catch {
+      fatalError(error.localizedDescription)
     }
   }
 
@@ -64,14 +83,21 @@ struct EditCardView: View {
     newPrompt.removeAll()
     newAnswer.removeAll()
 
-    let card = Card(prompt: trimmedPrompt, answer: trimmedAnswer)
+    var card = Card(prompt: trimmedPrompt, answer: trimmedAnswer)
     cards.insert(card, at: 0)
-    saveData()
+    performWrite { db in
+      try card.insert(db)
+    }
   }
 
-  func removeCards(at offsets: IndexSet) {
-    cards.remove(atOffsets: offsets)
-    saveData()
+  func deleteCards(at offsets: IndexSet) {
+    for offset in offsets {
+      let card = cards[offset]
+      cards.remove(at: offset)
+      performWrite { db in
+        try card.delete(db)
+      }
+    }
   }
 }
 

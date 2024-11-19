@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8BDFF46E2CED1A9D0074AF9D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 8BDFF46D2CED1A9D0074AF9D /* GRDB */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		8BDFF40C2CE9AEF80074AF9D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8BDFF46E2CED1A9D0074AF9D /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = FlashZilla;
 			packageProductDependencies = (
+				8BDFF46D2CED1A9D0074AF9D /* GRDB */,
 			);
 			productName = FlashZilla;
 			productReference = 8BDFF3FB2CE9AEF70074AF9D /* FlashZilla.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 8BDFF3F22CE9AEF70074AF9D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8BDFF46C2CED1A9D0074AF9D /* XCRemoteSwiftPackageReference "GRDB" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8BDFF3FC2CE9AEF70074AF9D /* Products */;
 			projectDirPath = "";
@@ -558,6 +567,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8BDFF46C2CED1A9D0074AF9D /* XCRemoteSwiftPackageReference "GRDB" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8BDFF46D2CED1A9D0074AF9D /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8BDFF46C2CED1A9D0074AF9D /* XCRemoteSwiftPackageReference "GRDB" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8BDFF3F32CE9AEF70074AF9D /* Project object */;
 }

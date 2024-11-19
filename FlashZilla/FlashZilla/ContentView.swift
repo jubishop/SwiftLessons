@@ -1,5 +1,6 @@
 // Copyright Justin Bishop, 2024
 
+import GRDB
 import SwiftUI
 
 extension View {
@@ -10,8 +11,10 @@ extension View {
 }
 
 struct ContentView: View {
-  @Environment(\.accessibilityDifferentiateWithoutColor) var accessibilityDifferentiateWithoutColor
-  @Environment(\.accessibilityVoiceOverEnabled) var accessibilityVoiceOverEnabled
+  @Environment(\.accessibilityDifferentiateWithoutColor)
+  var accessibilityDifferentiateWithoutColor
+  @Environment(\.accessibilityVoiceOverEnabled)
+  var accessibilityVoiceOverEnabled
   @Environment(\.scenePhase) var scenePhase
 
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -20,6 +23,20 @@ struct ContentView: View {
   @State private var timeRemaining = 100
   @State private var cards: [Card] = []
   @State private var showingEditScreen = false
+
+  let dbQueue: DatabaseQueue
+
+  init() {
+    do {
+      dbQueue = try DatabaseQueue(
+        path: URL.documentsDirectory
+          .appending(path: "db.sqlite")
+          .absoluteString
+      )
+    } catch {
+      fatalError(error.localizedDescription)
+    }
+  }
 
   var body: some View {
     ZStack {
@@ -77,7 +94,8 @@ struct ContentView: View {
       .foregroundStyle(.white)
       .font(.largeTitle)
       .padding()
-      if accessibilityDifferentiateWithoutColor || accessibilityVoiceOverEnabled {
+      if accessibilityDifferentiateWithoutColor || accessibilityVoiceOverEnabled
+      {
         VStack {
           Spacer()
 
@@ -139,10 +157,12 @@ struct ContentView: View {
   }
 
   func loadData() {
-    if let data = UserDefaults.standard.data(forKey: "Cards") {
-      if let decoded = try? JSONDecoder().decode([Card].self, from: data) {
-        cards = decoded
+    do {
+      cards = try dbQueue.read { db in
+        try Card.fetchAll(db)
       }
+    } catch {
+      fatalError(error.localizedDescription)
     }
   }
 
@@ -170,7 +190,7 @@ struct ContentView: View {
     guard let index = cards.firstIndex(where: { $0.id == card.id }) else {
       return
     }
-    
+
     withAnimation {
       cards.remove(at: index)
       cards.insert(Card(prompt: card.prompt, answer: card.answer), at: 0)
