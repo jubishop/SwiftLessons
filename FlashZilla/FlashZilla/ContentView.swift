@@ -35,10 +35,12 @@ struct ContentView: View {
           .background(.black.opacity(0.75))
           .clipShape(.capsule)
         ZStack {
-          ForEach(0..<cards.count, id: \.self) { index in
-            CardView(card: cards[index]) {
-              withAnimation {
-                removeCard(at: index)
+          ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
+            CardView(card: card) { correct in
+              if correct {
+                removeCard(card)
+              } else {
+                moveCardToBack(card)
               }
             }
             .stacked(at: index, in: cards.count)
@@ -81,8 +83,8 @@ struct ContentView: View {
 
           HStack {
             Button {
-              withAnimation {
-                removeCard(at: cards.count - 1)
+              if !cards.isEmpty {
+                moveCardToBack(cards.last!)
               }
             } label: {
               Image(systemName: "xmark.circle")
@@ -96,8 +98,8 @@ struct ContentView: View {
             Spacer()
 
             Button {
-              withAnimation {
-                removeCard(at: cards.count - 1)
+              if !cards.isEmpty {
+                removeCard(cards.last!)
               }
             } label: {
               Image(systemName: "checkmark.circle")
@@ -150,12 +152,28 @@ struct ContentView: View {
     loadData()
   }
 
-  func removeCard(at index: Int) {
-    guard index >= 0 else { return }
+  func removeCard(_ card: Card) {
     guard !cards.isEmpty else { return }
-    cards.remove(at: index)
+
+    withAnimation {
+      if let index = cards.firstIndex(where: { $0.id == card.id }) {
+        cards.remove(at: index)
+      }
+    }
+
     if cards.isEmpty {
       isActive = false
+    }
+  }
+
+  func moveCardToBack(_ card: Card) {
+    guard let index = cards.firstIndex(where: { $0.id == card.id }) else {
+      return
+    }
+    
+    withAnimation {
+      cards.remove(at: index)
+      cards.insert(Card(prompt: card.prompt, answer: card.answer), at: 0)
     }
   }
 }
