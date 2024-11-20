@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8BDFF46E2CED1A9D0074AF9D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 8BDFF46D2CED1A9D0074AF9D /* GRDB */; };
+		8BDFF4772CED9E430074AF9D /* GRDBQuery in Frameworks */ = {isa = PBXBuildFile; productRef = 8BDFF4762CED9E430074AF9D /* GRDBQuery */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8BDFF4772CED9E430074AF9D /* GRDBQuery in Frameworks */,
 				8BDFF46E2CED1A9D0074AF9D /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,6 +120,7 @@
 			name = FlashZilla;
 			packageProductDependencies = (
 				8BDFF46D2CED1A9D0074AF9D /* GRDB */,
+				8BDFF4762CED9E430074AF9D /* GRDBQuery */,
 			);
 			productName = FlashZilla;
 			productReference = 8BDFF3FB2CE9AEF70074AF9D /* FlashZilla.app */;
@@ -203,6 +206,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				8BDFF46C2CED1A9D0074AF9D /* XCRemoteSwiftPackageReference "GRDB" */,
+				8BDFF4752CED9E430074AF9D /* XCRemoteSwiftPackageReference "GRDBQuery" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8BDFF3FC2CE9AEF70074AF9D /* Products */;
@@ -577,6 +581,14 @@
 				kind = branch;
 			};
 		};
+		8BDFF4752CED9E430074AF9D /* XCRemoteSwiftPackageReference "GRDBQuery" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDBQuery";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -584,6 +596,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8BDFF46C2CED1A9D0074AF9D /* XCRemoteSwiftPackageReference "GRDB" */;
 			productName = GRDB;
+		};
+		8BDFF4762CED9E430074AF9D /* GRDBQuery */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8BDFF4752CED9E430074AF9D /* XCRemoteSwiftPackageReference "GRDBQuery" */;
+			productName = GRDBQuery;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

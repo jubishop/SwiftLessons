@@ -2,10 +2,10 @@
 
 import Foundation
 
-@Observable @MainActor final class CardListModel {
+@MainActor final class CardListModel : ObservableObject {
   private let appDatabase: AppDatabase
 
-  private(set) var cards: [Card] = []
+  @Published private(set) var cards: [Card] = []
   
   init(appDatabase: AppDatabase) {
     self.appDatabase = appDatabase

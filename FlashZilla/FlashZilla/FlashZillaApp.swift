@@ -13,19 +13,11 @@ extension View {
   }
 }
 
-struct AppView: View {
-  @Environment(\.appDatabase) var appDatabase
-  
-  var body: some View {
-    ContentView(appDatabase: appDatabase)
-  }
-}
-
 @main
 struct FlashZillaApp: App {
   var body: some Scene {
     WindowGroup {
-      AppView().appDatabase(.shared())
+      ContentView().appDatabase(.shared())
     }
   }
 }

@@ -1,6 +1,6 @@
 // Copyright Justin Bishop, 2024
 
-import GRDB
+import GRDBQuery
 import SwiftUI
 
 extension View {
@@ -19,16 +19,17 @@ struct ContentView: View {
 
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-  @State private var model: CardListModel
+  @EnvironmentStateObject private var model: CardListModel
   @State private var cards: [Card]
   @State private var isActive = true
   @State private var timeRemaining = 100
   @State private var showingEditScreen = false
 
-  init(appDatabase: AppDatabase) {
-    let initialModel = CardListModel(appDatabase: appDatabase)
-    _model = State(initialValue: initialModel)
-    _cards = State(initialValue: initialModel.cards)
+  init() {
+    _model = EnvironmentStateObject { env in
+      CardListModel(appDatabase: env.appDatabase)
+    }
+    _cards = State(initialValue: _model.wrappedValue.cards)
   }
 
   var body: some View {
@@ -188,5 +189,5 @@ struct ContentView: View {
 }
 
 #Preview {
-  AppView().appDatabase(AppDatabase.shared())
+  ContentView().appDatabase(AppDatabase.shared())
 }
