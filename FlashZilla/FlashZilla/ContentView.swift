@@ -19,23 +19,16 @@ struct ContentView: View {
 
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
+  @State private var model: CardListModel
+  @State private var cards: [Card]
   @State private var isActive = true
   @State private var timeRemaining = 100
-  @State private var cards: [Card] = []
   @State private var showingEditScreen = false
 
-  let dbQueue: DatabaseQueue
-
-  init() {
-    do {
-      dbQueue = try DatabaseQueue(
-        path: URL.documentsDirectory
-          .appending(path: "db.sqlite")
-          .absoluteString
-      )
-    } catch {
-      fatalError(error.localizedDescription)
-    }
+  init(appDatabase: AppDatabase) {
+    let initialModel = CardListModel(appDatabase: appDatabase)
+    _model = State(initialValue: initialModel)
+    _cards = State(initialValue: initialModel.cards)
   }
 
   var body: some View {
@@ -68,11 +61,14 @@ struct ContentView: View {
         .allowsHitTesting(timeRemaining > 0)
 
         if cards.isEmpty {
-          Button("Start Again", action: resetCards)
-            .padding()
-            .background(.white)
-            .foregroundStyle(.black)
-            .clipShape(.capsule)
+          Button("Start Again") {
+            cards = model.cards
+            resetTimer()
+          }
+          .padding()
+          .background(.white)
+          .foregroundStyle(.black)
+          .clipShape(.capsule)
         }
       }
       VStack {
@@ -148,35 +144,27 @@ struct ContentView: View {
         isActive = false
       }
     }
+    .onChange(of: model.cards) {
+      cards = model.cards
+    }
     .sheet(
       isPresented: $showingEditScreen,
-      onDismiss: resetCards,
-      content: EditCardView.init
-    )
-    .onAppear(perform: resetCards)
-  }
-
-  func loadData() {
-    do {
-      cards = try dbQueue.read { db in
-        try Card.fetchAll(db)
-      }
-    } catch {
-      fatalError(error.localizedDescription)
+      onDismiss: resetTimer
+    ) {
+      EditCardView(model: model)
     }
   }
 
-  func resetCards() {
+  func resetTimer() {
     timeRemaining = 100
     isActive = true
-    loadData()
   }
 
   func removeCard(_ card: Card) {
     guard !cards.isEmpty else { return }
 
     withAnimation {
-      if let index = cards.firstIndex(where: { $0.id == card.id }) {
+      if let index = cards.firstIndex(where: { $0 == card }) {
         cards.remove(at: index)
       }
     }
@@ -187,17 +175,18 @@ struct ContentView: View {
   }
 
   func moveCardToBack(_ card: Card) {
-    guard let index = cards.firstIndex(where: { $0.id == card.id }) else {
-      return
-    }
-
     withAnimation {
-      cards.remove(at: index)
-      cards.insert(Card(prompt: card.prompt, answer: card.answer), at: 0)
+      if let index = cards.firstIndex(where: { $0 == card }) {
+        cards.remove(at: index)
+        cards.insert(
+          Card(prompt: card.prompt, answer: card.answer),
+          at: 0
+        )
+      }
     }
   }
 }
 
 #Preview {
-  ContentView()
+  AppView().appDatabase(AppDatabase.shared())
 }

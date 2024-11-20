@@ -3,35 +3,29 @@
 import GRDB
 import SwiftUI
 
+extension EnvironmentValues {
+  @Entry var appDatabase = AppDatabase.empty()
+}
+
+extension View {
+  func appDatabase(_ appDatabase: AppDatabase) -> some View {
+    self.environment(\.appDatabase, appDatabase)
+  }
+}
+
+struct AppView: View {
+  @Environment(\.appDatabase) var appDatabase
+  
+  var body: some View {
+    ContentView(appDatabase: appDatabase)
+  }
+}
+
 @main
 struct FlashZillaApp: App {
-  init() {
-    var migrator = DatabaseMigrator()
-    migrator.registerMigration("Create cards") { db in
-      try db.create(table: "card") { t in
-        t.autoIncrementedPrimaryKey("id")
-        t.column("prompt", .text).notNull()
-        t.column("answer", .text).notNull()
-      }
-    }
-    do {
-      let dbQueue = try DatabaseQueue(
-        path: URL.documentsDirectory
-          .appending(path: "db.sqlite")
-          .absoluteString
-      )
-      try migrator.migrate(dbQueue)
-      print(URL.documentsDirectory
-        .appending(path: "db.sqlite")
-        .absoluteString)
-    } catch {
-      fatalError(error.localizedDescription)
-    }
-  }
-
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      AppView().appDatabase(.shared())
     }
   }
 }

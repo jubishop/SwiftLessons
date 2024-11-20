@@ -4,22 +4,13 @@ import GRDB
 import SwiftUI
 
 struct EditCardView: View {
-  let dbQueue: DatabaseQueue
+  @State var model: CardListModel
 
-  init() {
-    do {
-      dbQueue = try DatabaseQueue(
-        path: URL.documentsDirectory
-          .appending(path: "db.sqlite")
-          .absoluteString
-      )
-    } catch {
-      fatalError(error.localizedDescription)
-    }
+  init(model: CardListModel) {
+    _model = State(initialValue: model)
   }
 
   @Environment(\.dismiss) var dismiss
-  @State private var cards: [Card] = []
   @State private var newPrompt = ""
   @State private var newAnswer = ""
 
@@ -33,11 +24,11 @@ struct EditCardView: View {
         }
 
         Section {
-          ForEach(0..<cards.count, id: \.self) { index in
+          ForEach(0..<model.cards.count, id: \.self) { index in
             VStack(alignment: .leading) {
-              Text(cards[index].prompt)
+              Text(model.cards[index].prompt)
                 .font(.headline)
-              Text(cards[index].answer)
+              Text(model.cards[index].answer)
                 .foregroundStyle(.secondary)
             }
           }
@@ -48,30 +39,11 @@ struct EditCardView: View {
       .toolbar {
         Button("Done", action: done)
       }
-      .onAppear(perform: loadData)
     }
   }
 
   func done() {
     dismiss()
-  }
-
-  func loadData() {
-    do {
-      cards = try dbQueue.read { db in
-        try Card.fetchAll(db)
-      }
-    } catch {
-      fatalError(error.localizedDescription)
-    }
-  }
-
-  private func performWrite(_ block: @escaping (Database) throws -> Void) {
-    do {
-      try dbQueue.write(block)
-    } catch {
-      fatalError(error.localizedDescription)
-    }
   }
 
   func addCard() {
@@ -83,24 +55,25 @@ struct EditCardView: View {
     newPrompt.removeAll()
     newAnswer.removeAll()
 
-    var card = Card(prompt: trimmedPrompt, answer: trimmedAnswer)
-    cards.insert(card, at: 0)
-    performWrite { db in
-      try card.insert(db)
+    do {
+      let card = Card(prompt: trimmedPrompt, answer: trimmedAnswer)
+      try model.addCard(card)
+    } catch {
+      fatalError(error.localizedDescription)
     }
   }
 
   func deleteCards(at offsets: IndexSet) {
     for offset in offsets {
-      let card = cards[offset]
-      cards.remove(at: offset)
-      performWrite { db in
-        try card.delete(db)
+      do {
+        try model.deleteCard(at: offset)
+      } catch {
+        fatalError(error.localizedDescription)
       }
     }
   }
 }
 
 #Preview {
-  EditCardView()
+  EditCardView(model: CardListModel(appDatabase: AppDatabase.shared()))
 }
