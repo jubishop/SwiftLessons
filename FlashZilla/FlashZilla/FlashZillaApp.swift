@@ -17,7 +17,7 @@ extension View {
 struct FlashZillaApp: App {
   var body: some Scene {
     WindowGroup {
-      ContentView().appDatabase(.shared())
+      ContentView().appDatabase(.shared)
     }
   }
 }

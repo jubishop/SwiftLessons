@@ -1,6 +1,6 @@
 // Copyright Justin Bishop, 2024
 
-import GRDBQuery
+import JubiSwift
 import SwiftUI
 
 extension View {
@@ -189,5 +189,5 @@ struct ContentView: View {
 }
 
 #Preview {
-  ContentView().appDatabase(AppDatabase.shared())
+  ContentView().appDatabase(.shared)
 }

@@ -75,5 +75,5 @@ struct EditCardView: View {
 }
 
 #Preview {
-  EditCardView(model: CardListModel(appDatabase: AppDatabase.shared()))
+  EditCardView(model: CardListModel(appDatabase: .shared))
 }

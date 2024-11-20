@@ -1,5 +1,5 @@
 {
-  "originHash" : "883d2fd622a4b9eaa75648a77359c954b4f112a6d16c1a4d99f800a23916374d",
+  "originHash" : "70360b8c668b190e9dbf65f5c5e17edea3ef254bab4025e92b9831b7706806bc",
   "pins" : [
     {
       "identity" : "grdb.swift",
@@ -11,12 +11,12 @@
       }
     },
     {
-      "identity" : "grdbquery",
+      "identity" : "jubiswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/groue/GRDBQuery",
+      "location" : "https://github.com/jubishop/JubiSwift",
       "state" : {
         "branch" : "main",
-        "revision" : "f279a57b7ba5749c05d347751a2f572f8759a7d2"
+        "revision" : "dc215dbcc141f579f333fe0c94e882f960f0b9e4"
       }
     }
   ],

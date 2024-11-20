@@ -31,10 +31,12 @@ class Card: Codable,
     "Card(id: \(id ?? 0), prompt: \"\(prompt)\", answer: \"\(answer)\")"
   }
 
-  static let example = Card(
-    prompt: "Who played the 13th Doctor in Doctor Who?",
-    answer: "Jodie Whittaker"
-  )
+  #if DEBUG
+    static let example = Card(
+      prompt: "Who played the 13th Doctor in Doctor Who?",
+      answer: "Jodie Whittaker"
+    )
+  #endif
 
   init(
     id: Int64? = Int64.random(in: Int64.min...Int64.max),

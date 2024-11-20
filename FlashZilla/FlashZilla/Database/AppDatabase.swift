@@ -10,7 +10,7 @@ final class AppDatabase: Sendable {
     do {
       let dbPool = try DatabasePool(
         path: URL.documentsDirectory.appending(path: "db.sqlite").path,
-        configuration: makeConfiguration()
+        configuration: __makeConfiguration()
       )
       return try AppDatabase(dbPool)
     } catch {
@@ -18,18 +18,27 @@ final class AppDatabase: Sendable {
     }
   }
 
-  static func shared() -> AppDatabase {
+  static var shared: AppDatabase { __makeShared() }
+  static func __makeShared() -> AppDatabase {
     do {
-      let dbQueue = try DatabaseQueue(
+      let dbPool = try DatabasePool(
         path: URL.documentsDirectory
           .appending(path: "db.sqlite")
           .absoluteString,
-        configuration: makeConfiguration()
+        configuration: __makeConfiguration()
       )
-      return try AppDatabase(dbQueue)
+      return try AppDatabase(dbPool)
     } catch {
       fatalError(error.localizedDescription)
     }
+  }
+
+  static func __makeConfiguration() -> Configuration {
+    var config = Configuration()
+    #if DEBUG
+      config.publicStatementArguments = true
+    #endif
+    return config
   }
 
   init(_ dbWriter: any GRDB.DatabaseWriter) throws {
@@ -39,14 +48,6 @@ final class AppDatabase: Sendable {
     } catch {
       fatalError(error.localizedDescription)
     }
-  }
-
-  static func makeConfiguration() -> Configuration {
-    var config = Configuration()
-    #if DEBUG
-      config.publicStatementArguments = true
-    #endif
-    return config
   }
 
   private var migrator: DatabaseMigrator {
@@ -64,7 +65,7 @@ final class AppDatabase: Sendable {
   }
 
   public func read<T>(_ block: (Database) throws -> T) throws -> T {
-    return try dbWriter.read { db in
+    try dbWriter.read { db in
       try block(db)
     }
   }

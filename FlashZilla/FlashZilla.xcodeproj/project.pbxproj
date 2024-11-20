@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8B5739DD2CEE683A001EEC56 /* JubiSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8B5739DC2CEE683A001EEC56 /* JubiSwift */; };
 		8BDFF46E2CED1A9D0074AF9D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 8BDFF46D2CED1A9D0074AF9D /* GRDB */; };
-		8BDFF4772CED9E430074AF9D /* GRDBQuery in Frameworks */ = {isa = PBXBuildFile; productRef = 8BDFF4762CED9E430074AF9D /* GRDBQuery */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BDFF4772CED9E430074AF9D /* GRDBQuery in Frameworks */,
+				8B5739DD2CEE683A001EEC56 /* JubiSwift in Frameworks */,
 				8BDFF46E2CED1A9D0074AF9D /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -120,7 +120,7 @@
 			name = FlashZilla;
 			packageProductDependencies = (
 				8BDFF46D2CED1A9D0074AF9D /* GRDB */,
-				8BDFF4762CED9E430074AF9D /* GRDBQuery */,
+				8B5739DC2CEE683A001EEC56 /* JubiSwift */,
 			);
 			productName = FlashZilla;
 			productReference = 8BDFF3FB2CE9AEF70074AF9D /* FlashZilla.app */;
@@ -206,7 +206,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				8BDFF46C2CED1A9D0074AF9D /* XCRemoteSwiftPackageReference "GRDB" */,
-				8BDFF4752CED9E430074AF9D /* XCRemoteSwiftPackageReference "GRDBQuery" */,
+				8BB6C5CC2CEE67F4000BEB95 /* XCRemoteSwiftPackageReference "JubiSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8BDFF3FC2CE9AEF70074AF9D /* Products */;
@@ -573,6 +573,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8BB6C5CC2CEE67F4000BEB95 /* XCRemoteSwiftPackageReference "JubiSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jubishop/JubiSwift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		8BDFF46C2CED1A9D0074AF9D /* XCRemoteSwiftPackageReference "GRDB" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/groue/GRDB.swift";
@@ -581,26 +589,18 @@
 				kind = branch;
 			};
 		};
-		8BDFF4752CED9E430074AF9D /* XCRemoteSwiftPackageReference "GRDBQuery" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/groue/GRDBQuery";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8B5739DC2CEE683A001EEC56 /* JubiSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8BB6C5CC2CEE67F4000BEB95 /* XCRemoteSwiftPackageReference "JubiSwift" */;
+			productName = JubiSwift;
+		};
 		8BDFF46D2CED1A9D0074AF9D /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8BDFF46C2CED1A9D0074AF9D /* XCRemoteSwiftPackageReference "GRDB" */;
 			productName = GRDB;
-		};
-		8BDFF4762CED9E430074AF9D /* GRDBQuery */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8BDFF4752CED9E430074AF9D /* XCRemoteSwiftPackageReference "GRDBQuery" */;
-			productName = GRDBQuery;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
