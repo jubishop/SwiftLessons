@@ -55,25 +55,17 @@ struct EditCardView: View {
     newPrompt.removeAll()
     newAnswer.removeAll()
 
-    do {
-      let card = Card(prompt: trimmedPrompt, answer: trimmedAnswer)
-      try model.addCard(card)
-    } catch {
-      fatalError(error.localizedDescription)
-    }
+    let card = Card(prompt: trimmedPrompt, answer: trimmedAnswer)
+    model.addCard(card)
   }
 
   func deleteCards(at offsets: IndexSet) {
     for offset in offsets {
-      do {
-        try model.deleteCard(at: offset)
-      } catch {
-        fatalError(error.localizedDescription)
-      }
+      model.deleteCard(at: offset)
     }
   }
 }
 
 #Preview {
-  EditCardView(model: CardListModel(appDatabase: .shared))
+  EditCardView(model: CardListModel(cardRepository: .shared))
 }

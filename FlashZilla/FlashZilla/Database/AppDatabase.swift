@@ -4,36 +4,32 @@ import Foundation
 import GRDB
 
 final class AppDatabase: Sendable {
-  private let dbWriter: any DatabaseWriter
+  private let dbWriter: DatabaseWriter
 
   static func empty() -> AppDatabase {
     do {
-      let dbPool = try DatabasePool(
-        path: URL.documentsDirectory.appending(path: "db.sqlite").path,
-        configuration: __makeConfiguration()
+      let dbQueue = try DatabaseQueue(
+        configuration: makeConfiguration()
       )
-      return try AppDatabase(dbPool)
+      return try AppDatabase(dbQueue)
     } catch {
-      fatalError(error.localizedDescription)
+      fatalError("Failed to initialize empty AppDatabase: \(error)")
     }
   }
 
-  static var shared: AppDatabase { __makeShared() }
-  static func __makeShared() -> AppDatabase {
+  static let shared: AppDatabase = {
     do {
       let dbPool = try DatabasePool(
-        path: URL.documentsDirectory
-          .appending(path: "db.sqlite")
-          .absoluteString,
-        configuration: __makeConfiguration()
+        path: URL.documentsDirectory.appendingPathComponent("db.sqlite").path,
+        configuration: makeConfiguration()
       )
       return try AppDatabase(dbPool)
     } catch {
-      fatalError(error.localizedDescription)
+      fatalError("Failed to initialize shared AppDatabase: \(error)")
     }
-  }
+  }()
 
-  static func __makeConfiguration() -> Configuration {
+  private static func makeConfiguration() -> Configuration {
     var config = Configuration()
     #if DEBUG
       config.publicStatementArguments = true
@@ -41,18 +37,13 @@ final class AppDatabase: Sendable {
     return config
   }
 
-  init(_ dbWriter: any GRDB.DatabaseWriter) throws {
+  init(_ dbWriter: any DatabaseWriter) throws {
     self.dbWriter = dbWriter
-    do {
-      try migrator.migrate(dbWriter)
-    } catch {
-      fatalError(error.localizedDescription)
-    }
+    try migrator.migrate(dbWriter)
   }
 
   private var migrator: DatabaseMigrator {
     var migrator = DatabaseMigrator()
-
     migrator.registerMigration("v1") { db in
       try db.create(table: "card") { t in
         t.autoIncrementedPrimaryKey("id")
@@ -60,17 +51,16 @@ final class AppDatabase: Sendable {
         t.column("answer", .text).notNull()
       }
     }
-
     return migrator
   }
 
-  public func read<T>(_ block: (Database) throws -> T) throws -> T {
+  func read<T>(_ block: (Database) throws -> T) throws -> T {
     try dbWriter.read { db in
       try block(db)
     }
   }
 
-  public func write(_ block: @escaping (Database) throws -> Void) throws {
+  func write(_ block: @escaping (Database) throws -> Void) throws {
     try dbWriter.write(block)
   }
 }

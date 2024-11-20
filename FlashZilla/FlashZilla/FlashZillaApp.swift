@@ -4,12 +4,12 @@ import GRDB
 import SwiftUI
 
 extension EnvironmentValues {
-  @Entry var appDatabase = AppDatabase.empty()
+  @Entry var cardRepository = CardRepository.empty()
 }
 
 extension View {
-  func appDatabase(_ appDatabase: AppDatabase) -> some View {
-    self.environment(\.appDatabase, appDatabase)
+  func cardRepository(_ appDatabase: AppDatabase) -> some View {
+    self.environment(\.cardRepository, CardRepository(appDatabase))
   }
 }
 
@@ -17,7 +17,7 @@ extension View {
 struct FlashZillaApp: App {
   var body: some Scene {
     WindowGroup {
-      ContentView().appDatabase(.shared)
+      ContentView().cardRepository(.shared)
     }
   }
 }

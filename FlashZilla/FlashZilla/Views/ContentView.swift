@@ -20,16 +20,15 @@ struct ContentView: View {
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
   @EnvironmentStateObject private var model: CardListModel
-  @State private var cards: [Card]
+  @State private var cards: [Card] = []
   @State private var isActive = true
   @State private var timeRemaining = 100
   @State private var showingEditScreen = false
 
   init() {
     _model = EnvironmentStateObject { env in
-      CardListModel(appDatabase: env.appDatabase)
+      CardListModel(cardRepository: env.cardRepository)
     }
-    _cards = State(initialValue: _model.wrappedValue.cards)
   }
 
   var body: some View {
@@ -131,6 +130,9 @@ struct ContentView: View {
         }
       }
     }
+    .onAppear {
+      cards = model.cards
+    }
     .onReceive(timer) { time in
       guard isActive else { return }
 
@@ -189,5 +191,5 @@ struct ContentView: View {
 }
 
 #Preview {
-  ContentView().appDatabase(.shared)
+  ContentView().cardRepository(.shared)
 }
