@@ -42,18 +42,6 @@ final class AppDatabase: Sendable {
     try migrator.migrate(dbWriter)
   }
 
-  private var migrator: DatabaseMigrator {
-    var migrator = DatabaseMigrator()
-    migrator.registerMigration("v1") { db in
-      try db.create(table: "card") { t in
-        t.autoIncrementedPrimaryKey("id")
-        t.column("prompt", .text).notNull()
-        t.column("answer", .text).notNull()
-      }
-    }
-    return migrator
-  }
-
   func read<T>(_ block: (Database) throws -> T) throws -> T {
     try dbWriter.read { db in
       try block(db)
