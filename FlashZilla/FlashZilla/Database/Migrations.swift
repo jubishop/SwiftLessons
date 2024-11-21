@@ -3,8 +3,8 @@
 import Foundation
 import GRDB
 
-extension AppDatabase {
-  var migrator: DatabaseMigrator {
+class Migrations {
+  static func migrate(_ dbWriter: DatabaseWriter) throws {
     var migrator = DatabaseMigrator()
 
     migrator.registerMigration("v1") { db in
@@ -14,7 +14,7 @@ extension AppDatabase {
         t.column("answer", .text).notNull()
       }
     }
-
-    return migrator
+    
+    try migrator.migrate(dbWriter)
   }
 }

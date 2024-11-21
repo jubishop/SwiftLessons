@@ -39,7 +39,7 @@ final class AppDatabase: Sendable {
 
   init(_ dbWriter: any DatabaseWriter) throws {
     self.dbWriter = dbWriter
-    try migrator.migrate(dbWriter)
+    try Migrations.migrate(dbWriter)
   }
 
   func read<T>(_ block: (Database) throws -> T) throws -> T {
