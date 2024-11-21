@@ -51,4 +51,8 @@ final class AppDatabase: Sendable {
   func write(_ block: @escaping (Database) throws -> Void) throws {
     try dbWriter.write(block)
   }
+  
+  var reader: any GRDB.DatabaseReader {
+    dbWriter
+  }
 }

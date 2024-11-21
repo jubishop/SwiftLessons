@@ -1,6 +1,7 @@
 // Copyright Justin Bishop, 2024
 
 import Foundation
+import GRDB
 
 @MainActor
 final class CardListModel: ObservableObject {
@@ -8,10 +9,17 @@ final class CardListModel: ObservableObject {
 
   @Published private(set) var cards: [Card] = []
 
+  @ObservationIgnored private var cancellable: AnyDatabaseCancellable?
+
   init(cardRepository: CardRepository) {
     self.cardRepository = cardRepository
-    performRepositoryOperation {
-      cards = try cardRepository.allCards()
+    let observation = ValueObservation.tracking { db in
+      try Card.fetchAll(db)
+    }
+    cancellable = observation.start(in: cardRepository.reader) { error in
+      fatalError("Failed to start tracking cards: \(error)")
+    } onChange: { [unowned self] cards in
+      self.cards = cards
     }
   }
 

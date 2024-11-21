@@ -3,7 +3,7 @@
 import Foundation
 import GRDB
 
-class Migrations {
+enum Migrations {
   static func migrate(_ dbWriter: DatabaseWriter) throws {
     var migrator = DatabaseMigrator()
 
