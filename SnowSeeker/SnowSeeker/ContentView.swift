@@ -84,6 +84,7 @@ struct ContentView: View {
           ResortView(resort: resort)
         }
         .searchable(text: $searchText, prompt: "Search for a resort")
+        .animation(.easeInOut, value: sortOrder)
       },
       detail: {
         WelcomeView()
